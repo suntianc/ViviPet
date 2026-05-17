@@ -1,0 +1,18 @@
+{
+  "Version": 3,
+  "FadeInTime": 0.5,
+  "FadeOutTime": 0.5,
+  "Parameters": [
+    { "Id": "ParamEyeLOpen", "Value": 0.5, "Blend": "Overwrite" },
+    { "Id": "ParamEyeROpen", "Value": 0.5, "Blend": "Overwrite" },
+    { "Id": "ParamEyeBallY", "Value": 0.4, "Blend": "Overwrite" },
+    { "Id": "ParamMouthForm", "Value": -0.6, "Blend": "Overwrite" },
+    { "Id": "ParamMouthOpenY", "Value": 0.2, "Blend": "Overwrite" },
+    { "Id": "ParamBrowLY", "Value": -0.5, "Blend": "Overwrite" },
+    { "Id": "ParamBrowRY", "Value": -0.5, "Blend": "Overwrite" },
+    { "Id": "ParamBrowLForm", "Value": -0.6, "Blend": "Overwrite" },
+    { "Id": "ParamBrowRForm", "Value": -0.6, "Blend": "Overwrite" },
+    { "Id": "ParamSwitch9", "Value": 1.0, "Blend": "Overwrite" },
+    { "Id": "ParamSwitch7", "Value": 1.0, "Blend": "Overwrite" }
+  ]
+}

@@ -207,13 +207,12 @@ export function updateTrayCurrentModel(index: number): void {
 
 /**
  * Load the tray icon.
- * - On macOS: use a native SF Symbol (pawprint.fill) which always works
- *   and automatically adapts to light/dark menu bar appearance.
- * - On Windows: load the app icon from the assets directory.
+ * - On macOS: use a native SF Symbol template image so the menu bar icon
+ *   matches the historical Electron behavior and avoids colored/boxed edges.
+ * - On Windows/Linux: load from the app assets.
  */
 function loadTrayIcon(): Electron.NativeImage {
   if (process.platform === 'darwin') {
-    // macOS: use native SF Symbol — guaranteed to render in the menu bar
     const icon = nativeImage.createFromNamedImage('v.circle.fill');
     if (!icon || icon.isEmpty()) {
       log.warn('SF Symbol v.circle.fill not available, falling back to star.fill');
@@ -222,13 +221,13 @@ function loadTrayIcon(): Electron.NativeImage {
       sized.setTemplateImage(true);
       return sized;
     }
+
     const sized = icon.resize({ width: 18, height: 18 });
     sized.setTemplateImage(true);
     log.info('Tray icon: SF Symbol v.circle.fill');
     return sized;
   }
 
-  // Windows: load from file
   const iconPath = app.isPackaged
     ? path.join(process.resourcesPath, 'assets', 'icon.png')
     : path.join(__dirname, '../../assets/icon.png');
@@ -236,8 +235,9 @@ function loadTrayIcon(): Electron.NativeImage {
   try {
     const icon = nativeImage.createFromPath(iconPath);
     if (!icon.isEmpty()) {
-      log.info('Tray icon loaded from file');
-      return icon.resize({ width: 18, height: 18 });
+      const sized = icon.resize({ width: 18, height: 18 });
+      log.info(`Tray icon loaded from file: ${iconPath}`);
+      return sized;
     }
   } catch (err) {
     log.warn('Failed to load tray icon from file:', err);

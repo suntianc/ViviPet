@@ -5,6 +5,12 @@ import { getIsQuitting } from './app-state';
 
 let petWindow: BrowserWindow | null = null;
 
+function resolveWindowIconPath(): string {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, 'assets', 'icon.png')
+    : path.join(__dirname, '../../assets/icon.png');
+}
+
 export function createPetWindow(): BrowserWindow {
   const { x, y, width, height } = screen.getPrimaryDisplay().bounds;
 
@@ -20,6 +26,7 @@ export function createPetWindow(): BrowserWindow {
     hasShadow: false,
     skipTaskbar: true,
     focusable: true,
+    icon: resolveWindowIconPath(),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

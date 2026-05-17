@@ -1,4 +1,5 @@
-import { app } from 'electron';
+import { app, nativeImage } from 'electron';
+import * as path from 'path';
 import log from 'electron-log';
 import { createPetWindow, getPetWindow, setPetWindow } from './window';
 import { createTray } from './tray';
@@ -12,6 +13,12 @@ import { getTTSManager } from './tts';
 log.transports.file.level = 'info';
 log.transports.console.level = 'debug';
 log.info('ViviPet starting...');
+
+function resolveAppIconPath(): string {
+  return app.isPackaged
+    ? path.join(process.resourcesPath, 'assets', 'icon.png')
+    : path.join(__dirname, '../../assets/icon.png');
+}
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (error) => {
@@ -42,6 +49,18 @@ if (!gotTheLock) {
 
 app.whenReady().then(async () => {
   log.info('App is ready');
+
+  try {
+    const dockIcon = nativeImage.createFromPath(resolveAppIconPath());
+    if (!dockIcon.isEmpty()) {
+      app.dock?.setIcon(dockIcon);
+      log.info('Dock icon configured');
+    } else {
+      log.warn('Dock icon image is empty');
+    }
+  } catch (error) {
+    log.warn('Failed to configure dock icon:', error);
+  }
 
   // Initialize custom protocol for user-imported model assets
   initModelProtocol();
