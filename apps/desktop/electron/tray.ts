@@ -28,9 +28,8 @@ function buildTTSSubmenu(): MenuItemConstructorOptions[] {
 
   const items: MenuItemConstructorOptions[] = [];
 
-  // TTS enable/disable toggle
   items.push({
-    label: 'Enable TTS',
+    label: 'Voice',
     type: 'checkbox',
     checked: config.enabled,
     click: (menuItem) => {
@@ -45,10 +44,9 @@ function buildTTSSubmenu(): MenuItemConstructorOptions[] {
     },
   });
 
-  // Source selection
   const sources = ['none', 'system', 'local', 'cloud'] as const;
   items.push({
-    label: 'Source',
+    label: 'Voice Source',
     submenu: sources.map((src) => ({
       label: sourceLabels[src],
       type: 'radio' as const,
@@ -61,12 +59,10 @@ function buildTTSSubmenu(): MenuItemConstructorOptions[] {
     })),
   });
 
-  // 状态信息
   if (config.enabled && config.source === 'system') {
     const voice = config.system?.voice || 'default';
-    items.push({ type: 'separator' });
     items.push({
-      label: `Voice: ${voice}`,
+      label: `Current Voice: ${voice}`,
       enabled: false,
     });
   }
@@ -76,10 +72,18 @@ function buildTTSSubmenu(): MenuItemConstructorOptions[] {
 
 /** Build the full tray context menu with current model list. */
 function buildTrayMenu(): Menu {
+  const isVisible = currentPetWindow?.isVisible() ?? false;
+  const modelItems: MenuItemConstructorOptions[] = modelNames.map((name, index) => ({
+    label: name,
+    type: 'radio',
+    checked: index === currentModelIndex,
+    click: () => sendAction(`model:${index}`),
+  }));
+
   // Base items
   const template: MenuItemConstructorOptions[] = [
     {
-      label: 'Show/Hide',
+      label: isVisible ? 'Hide ViviPet' : 'Show ViviPet',
       click: () => {
         const win = currentPetWindow;
         if (!win) return;
@@ -93,7 +97,7 @@ function buildTrayMenu(): Menu {
       },
     },
     {
-      label: 'Always on Top',
+      label: 'Keep on Top',
       type: 'checkbox',
       checked: true,
       click: (menuItem) => {
@@ -101,18 +105,13 @@ function buildTrayMenu(): Menu {
       },
     },
     {
-      label: 'Mouse Passthrough',
+      label: 'Click Through',
       type: 'checkbox',
       checked: false,
       click: (menuItem) => sendAction(menuItem.checked ? 'mousePassthrough:on' : 'mousePassthrough:off'),
     },
-    { type: 'separator' },
     {
-      label: 'Settings',
-      click: () => sendAction('settings'),
-    },
-    {
-      label: 'Size',
+      label: 'Scale',
       submenu: [
         { label: 'Small', click: () => sendAction('resizePet:0.7') },
         { label: 'Medium', click: () => sendAction('resizePet:1.0') },
@@ -120,35 +119,33 @@ function buildTrayMenu(): Menu {
       ],
     },
     {
-      label: 'Mouse Follow',
+      label: 'Follow Cursor',
       type: 'checkbox',
       checked: true,
       click: (menuItem) => sendAction(menuItem.checked ? 'mouseFollow:on' : 'mouseFollow:off'),
     },
     { type: 'separator' },
-    ...buildTTSSubmenu(),
-    { type: 'separator' },
     {
-      label: 'Import Model...',
-      click: () => sendAction('importModel'),
+      label: 'Speech',
+      submenu: buildTTSSubmenu(),
     },
     { type: 'separator' },
   ];
 
-  // Switch Model submenu (dynamic)
-  if (modelNames.length > 0) {
-    const modelItems: MenuItemConstructorOptions[] = modelNames.map((name, index) => ({
-      label: name,
-      type: 'radio',
-      checked: index === currentModelIndex,
-      click: () => sendAction(`model:${index}`),
-    }));
-    template.push({ label: 'Switch Model', submenu: modelItems });
-    template.push({ type: 'separator' });
+  const modelSubmenu: MenuItemConstructorOptions[] = [];
+  if (modelItems.length > 0) {
+    modelSubmenu.push(...modelItems, { type: 'separator' });
   }
+  modelSubmenu.push({
+    label: 'Import Model...',
+    click: () => sendAction('importModel'),
+  });
+
+  template.push({ label: 'Models', submenu: modelSubmenu });
+  template.push({ type: 'separator' });
 
   template.push({
-    label: 'Quit',
+    label: 'Quit ViviPet',
     click: () => {
       setIsQuitting(true);
       app.quit();

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { PlayActionOptions } from '../features/pet/PetRenderer';
+import { BehaviorProp } from '../features/pet/behavior-types';
 import { Live2DRenderer } from '../features/pet/Live2DRenderer';
 import { resolveExpressionCapability, resolvePropCapabilities } from '../features/pet/capability-resolver';
-import { BehaviorProp } from '../features/pet-events/behavior-plan';
 import { getModelCanvasSize, ModelConfig } from '../features/pet/model-registry';
 
 interface PetStageProps {

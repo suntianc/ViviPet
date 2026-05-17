@@ -4,7 +4,6 @@ import log from 'electron-log';
 import { createPetWindow, getPetWindow, setPetWindow } from './window';
 import { createTray } from './tray';
 import { registerIpcHandlers } from './ipc';
-import { startAdapterServer } from './adapter/server';
 import { initModelProtocol } from './model-manager';
 import { initActionIndex } from './action-index';
 import { getTTSManager } from './tts';
@@ -72,7 +71,6 @@ app.whenReady().then(async () => {
     createTray(petWindow);
     registerIpcHandlers();
     getTTSManager().setWindowGetter(getPetWindow);
-    startAdapterServer(getPetWindow);
 
     log.info('ViviPet initialized successfully');
   } catch (error) {

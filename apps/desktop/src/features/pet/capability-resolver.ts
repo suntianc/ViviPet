@@ -1,4 +1,4 @@
-import { BehaviorExpression, BehaviorProp } from '../pet-events/behavior-plan';
+import { BehaviorExpression, BehaviorProp } from './behavior-types';
 import { ModelConfig } from './model-registry';
 
 export interface ResolvedPropCommand {

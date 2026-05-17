@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ActionType } from '../features/actions/action-schema';
-import { BehaviorProp } from '../features/pet-events/behavior-plan';
+import { BehaviorProp } from '../features/pet/behavior-types';
 
 /** TTS 播放状态 */
 export type TTSState =
